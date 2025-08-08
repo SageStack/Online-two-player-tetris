@@ -1,11 +1,44 @@
 // net.js - WebSocket client + protocol
 import { toast, setConn } from "./ui.js";
-const WS_URL = "wss://tetris-ws.onrender.com";
 
-const DEFAULT_HOST = location.hostname || "localhost";
-const DEFAULT_PORT = location.search.includes("local=1")
-  ? 0
-  : location.port || (location.protocol === "https:" ? 443 : 80);
+/** Resolve the WebSocket URL from hash overrides, env, or location */
+function resolveWSURL(hostArg, portArg) {
+  // Hash overrides: #ws=... OR #host=...&port=...
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const wsParam = hash.get("ws");
+  const hostParam = hash.get("host");
+  const portParam = hash.get("port");
+
+  if (wsParam) {
+    // Accept full ws/wss URL
+    return wsParam;
+  }
+
+  const host = hostArg || hostParam || null;
+  const port = portArg || portParam || null;
+
+  // Production (Netlify) → use your Render WS by default
+  if (window.location.hostname.includes("netlify.app")) {
+    return "wss://online-two-player-tetris.onrender.com";
+  }
+
+  // Local test bypass: don't connect
+  if (location.search.includes("local=1")) {
+    return null;
+  }
+
+  // If explicit host was provided (arg or hash), build from it
+  if (host) {
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+    if (port && String(port) !== "0") return `${proto}://${host}:${port}`;
+    return `${proto}://${host}`;
+  }
+
+  // Default: same host as page, choose proto by scheme
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  const lp = location.port || (proto === "wss" ? 443 : 8080);
+  return `${proto}://${location.hostname}:${lp}`;
+}
 
 export const netState = {
   ws: null,
@@ -26,33 +59,40 @@ export function setIdentity(name) {
   identity.name = (name || "").slice(0, 12);
 }
 
-function makeSocket(host, port) {
-  const proto = location.protocol === "https:" ? "wss" : "ws";
-  const h = host || DEFAULT_HOST;
-  let url;
-  if (port && String(port) !== "0") url = `${proto}://${h}:${port}`;
-  else url = `${proto}://${h}`;
-  return new WebSocket(url);
-}
-
 export function connectWS(kind, roomId, host, port) {
-  if (location.search.includes("local=1")) {
+  const url = resolveWSURL(host, port);
+
+  if (!url) {
     toast("Local test mode: not connecting", "warn");
     return;
   }
-  const ws = makeSocket(host, port);
+
+  let ws;
+  try {
+    ws = new WebSocket(url);
+  } catch (e) {
+    console.error("WS create failed:", e);
+    toast("Failed to create WebSocket", "error");
+    return;
+  }
+
   netState.ws = ws;
 
   ws.onopen = () => {
     setConn(true);
-    const payload = { type: kind, roomId, name: identity.name };
-    ws.send(JSON.stringify(payload));
+    toast(`Connected`, "ok");
+    try {
+      ws.send(JSON.stringify({ type: kind, roomId, name: identity.name }));
+    } catch {}
   };
+
   ws.onclose = () => {
     setConn(false);
     netState.onDisconnected && netState.onDisconnected();
   };
-  ws.onerror = () => {
+
+  ws.onerror = (err) => {
+    console.error("WebSocket error:", err);
     toast("WebSocket error", "error");
   };
 
@@ -91,7 +131,7 @@ export function connectWS(kind, roomId, host, port) {
         netState.onGameOver && netState.onGameOver();
         break;
       case "heartbeat":
-        // no-op
+        // ignore
         break;
       case "error":
         toast(m.reason || "Server error", "error");
@@ -101,7 +141,7 @@ export function connectWS(kind, roomId, host, port) {
 
   // heartbeat
   const hb = setInterval(() => {
-    if (ws.readyState !== 1) {
+    if (!ws || ws.readyState !== 1) {
       clearInterval(hb);
       return;
     }
