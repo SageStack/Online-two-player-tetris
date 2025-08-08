@@ -1,4 +1,11 @@
-// Simple WS client
+// net.js - WebSocket client + protocol
+import { toast, setConn } from "./ui.js";
+
+const DEFAULT_HOST = location.hostname || "localhost";
+const DEFAULT_PORT = location.search.includes("local=1")
+  ? 0
+  : location.port || (location.protocol === "https:" ? 443 : 80);
+
 export const netState = {
   ws: null,
   roomId: null,
@@ -13,28 +20,40 @@ export const netState = {
   onGameOver: null,
 };
 
+let identity = { name: null };
+export function setIdentity(name) {
+  identity.name = (name || "").slice(0, 12);
+}
+
 function makeSocket(host, port) {
-  const url = `ws://${host}:${port}`;
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  const h = host || DEFAULT_HOST;
+  let url;
+  if (port && String(port) !== "0") url = `${proto}://${h}:${port}`;
+  else url = `${proto}://${h}`;
   return new WebSocket(url);
 }
 
-export function connectWS(
-  kind = "auto",
-  roomId = null,
-  host = location.hostname,
-  port = location.port || 8080
-) {
+export function connectWS(kind, roomId, host, port) {
+  if (location.search.includes("local=1")) {
+    toast("Local test mode: not connecting", "warn");
+    return;
+  }
   const ws = makeSocket(host, port);
   netState.ws = ws;
 
   ws.onopen = () => {
-    const payload = { type: kind, roomId };
+    setConn(true);
+    const payload = { type: kind, roomId, name: identity.name };
     ws.send(JSON.stringify(payload));
   };
   ws.onclose = () => {
+    setConn(false);
     netState.onDisconnected && netState.onDisconnected();
   };
-  ws.onerror = () => {};
+  ws.onerror = () => {
+    toast("WebSocket error", "error");
+  };
 
   ws.onmessage = (ev) => {
     let m;
@@ -48,6 +67,7 @@ export function connectWS(
       case "joined":
         netState.roomId = m.roomId;
         netState.playerId = m.playerId;
+        localStorage.setItem("tetris.room", netState.roomId);
         netState.onConnected &&
           netState.onConnected(m.roomId, m.playerId, m.size);
         break;
@@ -69,10 +89,28 @@ export function connectWS(
       case "gameOver":
         netState.onGameOver && netState.onGameOver();
         break;
+      case "heartbeat":
+        // no-op
+        break;
+      case "error":
+        toast(m.reason || "Server error", "error");
+        break;
     }
   };
+
+  // heartbeat
+  const hb = setInterval(() => {
+    if (ws.readyState !== 1) {
+      clearInterval(hb);
+      return;
+    }
+    try {
+      ws.send(JSON.stringify({ type: "heartbeat" }));
+    } catch {}
+  }, 25000);
 }
 
+// send compact periodic state
 export function sendState(payload) {
   const ws = netState.ws;
   if (!ws || ws.readyState !== 1) return;

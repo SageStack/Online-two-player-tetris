@@ -3,33 +3,151 @@
   <head>
     <meta charset="utf-8" />
     <title>Tiny Tetris Duel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="wrap">
-      <h1>Tiny Tetris Duel</h1>
-      <section class="boards">
-        <div class="board">
-          <h3>You</h3>
-          <canvas id="boardMe" width="240" height="480"></canvas>
-          <div class="stats">
-            <span>Score: <strong id="meScore">0</strong></span>
-            <span>Lines: <strong id="meLines">0</strong></span>
-            <span>Level: <strong id="meLevel">1</strong></span>
+    <div id="app" class="app" aria-live="polite">
+      <header class="topbar">
+        <h1>Tiny Tetris Duel</h1>
+        <div class="conn">
+          <span id="connStatus" class="badge">offline</span>
+          <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+          <label class="volume">
+            <span>Vol</span>
+            <input
+              id="volume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.6"
+              aria-label="Volume"
+            />
+          </label>
+        </div>
+      </header>
+
+      <section id="menu" class="menu">
+        <div class="card">
+          <h2>Play Online</h2>
+          <div class="row">
+            <button id="createBtn">Create Room</button>
+            <button id="autoBtn">Auto-Match</button>
+          </div>
+          <div class="row">
+            <input
+              id="roomInput"
+              type="text"
+              maxlength="6"
+              placeholder="ROOM"
+              aria-label="Room code"
+            />
+            <button id="joinBtn">Join</button>
+          </div>
+          <div class="row">
+            <input
+              id="nameInput"
+              type="text"
+              maxlength="12"
+              placeholder="Your name (optional)"
+              aria-label="Your name"
+            />
+          </div>
+          <p id="shareText" class="share"></p>
+          <p class="small">
+            Or <button id="localTestBtn" class="link">Local Test</button> (two
+            boards without server).
+          </p>
+        </div>
+        <div class="card">
+          <h3>How to Play</h3>
+          <ul>
+            <li>Arrow keys: ← → move, ↓ soft drop, ↑ rotate</li>
+            <li>Z/X rotate, Space hard drop, C hold, P pause</li>
+            <li>On-screen controls for mobile</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="arena" class="arena hidden" aria-label="Game area">
+        <div class="boards">
+          <div class="board-col">
+            <h3 id="meName">You</h3>
+            <canvas
+              id="boardMe"
+              width="240"
+              height="480"
+              aria-label="Your board"
+              role="img"
+            ></canvas>
+            <div class="panels">
+              <div class="panel">
+                <span>Score</span><strong id="meScore">0</strong>
+              </div>
+              <div class="panel">
+                <span>Lines</span><strong id="meLines">0</strong>
+              </div>
+              <div class="panel">
+                <span>Level</span><strong id="meLevel">1</strong>
+              </div>
+            </div>
+          </div>
+          <div class="board-col">
+            <h3 id="opName">Opponent</h3>
+            <canvas
+              id="boardOp"
+              width="240"
+              height="480"
+              aria-label="Opponent board"
+              role="img"
+            ></canvas>
+            <div class="panels">
+              <div class="panel">
+                <span>Score</span><strong id="opScore">0</strong>
+              </div>
+              <div class="panel">
+                <span>Lines</span><strong id="opLines">0</strong>
+              </div>
+              <div class="panel">
+                <span>Status</span><strong id="opStatus">—</strong>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="board">
-          <h3>Opponent</h3>
-          <canvas id="boardOp" width="240" height="480"></canvas>
-          <div class="stats">
-            <span>Score: <strong id="opScore">0</strong></span>
-            <span>Lines: <strong id="opLines">0</strong></span>
-            <span>Status: <strong id="opStatus">—</strong></span>
+
+        <div id="pauseOverlay" class="overlay hidden" aria-hidden="true">
+          <div class="overlay-content">
+            <h2>Paused</h2>
+            <p>Press <kbd>P</kbd> or tap Resume</p>
+            <button id="resumeBtn">Resume</button>
+          </div>
+        </div>
+
+        <div id="controls" class="controls" aria-label="On-screen controls">
+          <div class="dpad">
+            <button id="btnLeft" aria-label="Move Left">◀</button>
+            <button id="btnDown" aria-label="Soft Drop">▼</button>
+            <button id="btnRight" aria-label="Move Right">▶</button>
+          </div>
+          <div class="actions">
+            <button id="btnRotL" aria-label="Rotate CCW">⟲</button>
+            <button id="btnRotR" aria-label="Rotate CW">⟳</button>
+            <button id="btnHard" aria-label="Hard Drop">⬇︎</button>
+            <button id="btnHold" aria-label="Hold">H</button>
+            <button id="btnPause" aria-label="Pause/Resume">⏯</button>
           </div>
         </div>
       </section>
-    </main>
+
+      <div id="toasts" class="toasts" aria-live="assertive"></div>
+    </div>
+
+    <script type="module" src="./ui.js"></script>
+    <script type="module" src="./net.js"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

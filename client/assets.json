@@ -1,0 +1,21 @@
+{
+  "icons": {
+    "play": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/play.svg",
+    "pause": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/pause.svg",
+    "rotate": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/arrow-path.svg",
+    "harddrop": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/arrow-down.svg",
+    "left": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-left.svg",
+    "right": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-right.svg",
+    "down": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-down.svg",
+    "hold": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/hand-raised.svg"
+  },
+  "sounds": {
+    "move": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Click.ogg",
+    "rotate": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Beep-09.ogg",
+    "lock": "https://upload.wikimedia.org/wikipedia/commons/1/15/Beep-07.ogg",
+    "line": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Beep-03.ogg",
+    "tetris": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Beep-10.ogg",
+    "gameover": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Beep-05.ogg",
+    "ready": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Beep-05.ogg"
+  }
+}
