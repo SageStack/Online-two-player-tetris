@@ -178,7 +178,7 @@ button:hover,
 }
 .board-stack .op-layer {
   z-index: -1; /* requested: negative z so it sits behind */
-  opacity: 0.22; /* lighter overlay */
+  opacity: 0.35; /* lighter overlay */
   pointer-events: none; /* never block input */
   filter: saturate(0.7);
 }
@@ -247,9 +247,9 @@ canvas {
   flex-wrap: wrap;
 }
 .controls button {
-  min-width: 64px;
-  min-height: 64px;
-  font-size: 1.4rem;
+  min-width: clamp(52px, 10vw, 80px);
+  min-height: clamp(52px, 10vw, 80px);
+  font-size: clamp(1.1rem, 3.5vw, 1.6rem);
   border-radius: 0.8rem;
   cursor: pointer;
   touch-action: manipulation;
@@ -294,6 +294,7 @@ canvas {
     margin-bottom: 0.25rem;
   }
 }
+
 @media (min-width: 861px) {
   /* Desktop: keep controls anchored in layout, not fixed */
   .controls {
@@ -304,5 +305,32 @@ canvas {
   }
   .arena {
     padding-bottom: 0;
+  }
+}
+
+/* Extra space on very small phones so fixed controls don't overlap boards */
+@media (max-width: 600px) {
+  .arena {
+    padding-bottom: 30vh;
+  }
+}
+/* Short landscape phones: make controls inline to keep more vertical play area */
+@media (orientation: landscape) and (max-height: 500px) {
+  .controls {
+    position: static;
+    padding: 0.4rem 0;
+    background: none;
+    backdrop-filter: none;
+  }
+  .arena {
+    padding-bottom: 0;
+  }
+}
+/* Very wide screens: center boards and constrain max width */
+@media (min-width: 1200px) {
+  .boards {
+    grid-template-columns: 1fr 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 }

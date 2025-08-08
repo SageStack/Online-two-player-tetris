@@ -633,7 +633,7 @@ class Renderer {
     const cell = Math.floor(Math.min(w / COLS, h / VISIBLE_ROWS));
     const offX = Math.floor((w - cell * COLS) / 2);
     const offY = Math.floor((h - cell * VISIBLE_ROWS) / 2);
-    ctx.fillStyle = "rgba(11, 15, 38, 0.82)"; // semi-transparent to reveal opponent overlay
+    ctx.fillStyle = "rgba(11, 15, 38, 0.72)"; // semi-transparent to reveal opponent overlay
     ctx.fillRect(offX, offY, cell * COLS, cell * VISIBLE_ROWS);
     ctx.strokeStyle = "#1b2248";
     ctx.lineWidth = 1;
