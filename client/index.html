@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>Tiny Tetris Duel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- MISSING: no canvas or scripts yet -->
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <main class="wrap">
+      <h1>Tiny Tetris Duel</h1>
+      <section class="boards">
+        <div class="board">
+          <h3>You</h3>
+          <canvas id="boardMe" width="240" height="480"></canvas>
+          <div class="stats">
+            <span>Score: <strong id="meScore">0</strong></span>
+            <span>Lines: <strong id="meLines">0</strong></span>
+            <span>Level: <strong id="meLevel">1</strong></span>
+          </div>
+        </div>
+        <div class="board">
+          <h3>Opponent</h3>
+          <canvas id="boardOp" width="240" height="480"></canvas>
+          <div class="stats">
+            <span>Score: <strong id="opScore">0</strong></span>
+            <span>Lines: <strong id="opLines">0</strong></span>
+            <span>Status: <strong id="opStatus">—</strong></span>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
