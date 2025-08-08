@@ -1,14 +1,16 @@
 {
   "name": "tetrio-mini-ws",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Scaffold for a tiny tetris server",
+  "description": "Minimal WebSocket server for a 2-player Tetris-style game",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
   "engines": {
     "node": ">=18"
   }
