@@ -1,13 +1,13 @@
 {
   "icons": {
-    "play": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/play.svg",
-    "pause": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/pause.svg",
-    "rotate": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/arrow-path.svg",
-    "harddrop": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/arrow-down.svg",
-    "left": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-left.svg",
-    "right": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-right.svg",
-    "down": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/chevron-down.svg",
-    "hold": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/24/solid/hand-raised.svg"
+    "play": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/play.svg",
+    "pause": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/pause.svg",
+    "rotate": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/arrow-path.svg",
+    "harddrop": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/arrow-down.svg",
+    "left": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/chevron-left.svg",
+    "right": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/chevron-right.svg",
+    "down": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/chevron-down.svg",
+    "hold": "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/24/solid/hand-raised.svg"
   },
   "sounds": {
     "move": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Click.ogg",

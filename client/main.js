@@ -660,18 +660,29 @@ class Renderer {
         }
       }
     }
-    if (game.alive) {
-      const s = game.cur.shape();
-      for (let py = 0; py < 4; py++)
-        for (let px = 0; px < 4; px++) {
-          if (!s[py][px]) continue;
-          const x = game.cur.x + px,
-            y = game.cur.y + py;
-          if (y >= 2) {
-            const color = COLORS[game.cur.type];
-            this.tile(offX + x * cell, offY + (y - 2) * cell, cell, color);
+    // draw current piece (tolerant of plain objects without .shape())
+    if (game.alive && game.cur) {
+      const cur = game.cur;
+      const shape =
+        typeof cur.shape === "function"
+          ? cur.shape()
+          : SHAPES[cur.type]
+          ? SHAPES[cur.type][cur.rot || 0]
+          : null;
+
+      if (shape) {
+        for (let py = 0; py < 4; py++) {
+          for (let px = 0; px < 4; px++) {
+            if (!shape[py][px]) continue;
+            const x = cur.x + px;
+            const y = cur.y + py;
+            if (y >= 2) {
+              const color = COLORS[cur.type] || "#64748b";
+              this.tile(offX + x * cell, offY + (y - 2) * cell, cell, color);
+            }
           }
         }
+      }
     }
     if (!game.alive) {
       ctx.fillStyle = "rgba(0,0,0,.6)";
@@ -702,12 +713,18 @@ let opState = null;
 let lastTime = performance.now();
 
 // resize
-const resizeObserver = new ResizeObserver(() => {
-  meR.scaleForDPR();
-  opR.scaleForDPR();
-});
-resizeObserver.observe(meCanvas);
-resizeObserver.observe(opCanvas);
+let resizeRAF = 0;
+const onResize = () => {
+  if (resizeRAF) return;
+  resizeRAF = requestAnimationFrame(() => {
+    resizeRAF = 0;
+    meR.scaleForDPR();
+    opR.scaleForDPR();
+  });
+};
+const ro = new ResizeObserver(onResize);
+ro.observe(meCanvas);
+ro.observe(opCanvas);
 
 // inputs
 function bindInputs() {
@@ -896,12 +913,25 @@ function loop(ts) {
   meR.draw(game);
 
   if (opState) {
-    const dummy = {
-      board: opState.board ?? newMatrix(COLS, ROWS),
-      cur: opState.cur ?? { type: "O", x: 0, y: 0, rot: 0 },
-      alive: opState.alive ?? true,
+    const src = opState;
+    const cur = src.cur || { type: "O", x: 0, y: 0, rot: 0 };
+    const wrapped = {
+      board: src.board,
+      alive: src.alive ?? true,
+      cur: {
+        ...cur,
+        shape: () =>
+          SHAPES[cur.type]
+            ? SHAPES[cur.type][cur.rot || 0]
+            : [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+              ],
+      },
     };
-    opR.draw(dummy);
+    opR.draw(wrapped);
   }
   sendState(game.serializeState());
   updatePanels();
