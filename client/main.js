@@ -617,7 +617,6 @@ class Renderer {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
-    this.scaleForDPR();
   }
   scaleForDPR() {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -676,10 +675,9 @@ class Renderer {
             if (!shape[py][px]) continue;
             const x = cur.x + px;
             const y = cur.y + py;
-            if (y >= 2) {
-              const color = COLORS[cur.type] || "#64748b";
-              this.tile(offX + x * cell, offY + (y - 2) * cell, cell, color);
-            }
+
+            const color = COLORS[cur.type] || "#64748b";
+            this.tile(offX + x * cell, offY + (y - 2) * cell, cell, color);
           }
         }
       }
@@ -710,7 +708,6 @@ const opR = new Renderer(opCanvas);
 
 let game = new Game();
 let opState = null;
-let lastTime = performance.now();
 
 // resize
 let resizeRAF = 0;
@@ -973,8 +970,14 @@ onLocalTestRequested(() => {
   toast("Local test mode enabled", "ok");
 });
 
-let last = performance.now();
-requestAnimationFrame(loop);
+let lastTime = performance.now();
+// Ensure canvases are sized before the first frame
+requestAnimationFrame(() => {
+  meR.scaleForDPR();
+  opR.scaleForDPR();
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+});
 
 const overCheck = setInterval(() => {
   if (!game.alive) {
