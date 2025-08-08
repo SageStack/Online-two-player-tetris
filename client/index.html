@@ -78,13 +78,24 @@
         <div class="boards">
           <div class="board-col">
             <h3 id="meName">You</h3>
-            <canvas
-              id="boardMe"
-              width="240"
-              height="480"
-              aria-label="Your board"
-              role="img"
-            ></canvas>
+            <div class="board-stack">
+              <canvas
+                id="boardOp"
+                class="op-layer"
+                width="240"
+                height="480"
+                aria-label="Opponent overlay"
+                role="img"
+              ></canvas>
+              <canvas
+                id="boardMe"
+                class="me-layer"
+                width="240"
+                height="480"
+                aria-label="Your board"
+                role="img"
+              ></canvas>
+            </div>
             <div class="panels">
               <div class="panel">
                 <span>Score</span><strong id="meScore">0</strong>
@@ -99,13 +110,6 @@
           </div>
           <div class="board-col">
             <h3 id="opName">Opponent</h3>
-            <canvas
-              id="boardOp"
-              width="240"
-              height="480"
-              aria-label="Opponent board"
-              role="img"
-            ></canvas>
             <div class="panels">
               <div class="panel">
                 <span>Score</span><strong id="opScore">0</strong>
