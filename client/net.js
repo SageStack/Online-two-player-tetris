@@ -1,5 +1,6 @@
 // net.js - WebSocket client + protocol
 import { toast, setConn } from "./ui.js";
+const WS_URL = "wss://tetris-ws.onrender.com";
 
 const DEFAULT_HOST = location.hostname || "localhost";
 const DEFAULT_PORT = location.search.includes("local=1")
