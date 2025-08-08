@@ -422,7 +422,7 @@ class Game {
   spawn() {
     const p = new Piece(this.rng.next());
     p.x = ((COLS / 2) | 0) - 2;
-    p.y = 0;
+    p.y = 2;
     if (this.collides(p, p.x, p.y)) this.alive = false;
     return p;
   }
@@ -492,7 +492,7 @@ class Game {
     if (prev) {
       this.cur = new Piece(prev);
       this.cur.x = ((COLS / 2) | 0) - 2;
-      this.cur.y = 0;
+      this.cur.y = 2;
     } else {
       this.cur = this.spawn();
     }
@@ -633,7 +633,7 @@ class Renderer {
     const cell = Math.floor(Math.min(w / COLS, h / VISIBLE_ROWS));
     const offX = Math.floor((w - cell * COLS) / 2);
     const offY = Math.floor((h - cell * VISIBLE_ROWS) / 2);
-    ctx.fillStyle = "#0b0f26";
+    ctx.fillStyle = "rgba(11, 15, 38, 0.82)"; // semi-transparent to reveal opponent overlay
     ctx.fillRect(offX, offY, cell * COLS, cell * VISIBLE_ROWS);
     ctx.strokeStyle = "#1b2248";
     ctx.lineWidth = 1;
@@ -864,6 +864,11 @@ function setupNetworking() {
     }
     el("menu").classList.add("hidden");
     el("arena").classList.remove("hidden");
+    // ensure canvases size correctly now that they're visible
+    requestAnimationFrame(() => {
+      meR.scaleForDPR();
+      opR.scaleForDPR();
+    });
   };
   netState.onDisconnected = () => {
     setConn(false);
