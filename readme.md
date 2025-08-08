@@ -1,3 +1,9 @@
+UPDATED:
+A link to the game that is hosted on a server is available:
+
+https://689581e7fe0bd8a974c689eb--stirring-marzipan-78d5d0.netlify.app
+
+
 # Tiny Tetris Duel (Web + WebSocket)
 
 A lightweight **Tetris-style** game that runs in any modern browser with **real-time two-player** online play.
